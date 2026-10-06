@@ -10,9 +10,13 @@ const games = [
     description:
       'The central control system has malfunctioned. Restore it through memory, logic and pattern recognition.',
     skills: ['Memory', 'Logic', 'Pattern Recognition'],
-    phases: ['Memory', 'Logic', 'Core Memory'],
+    phases: [
+      ['Memory', 'Decode short-term signals.'],
+      ['Logic', 'Resolve broken patterns.'],
+      ['Core Memory', 'Rebuild the final sequence.'],
+    ],
     meta: ['Skills tested: Memory, logic, pattern recognition', 'Difficulty: Progressive'],
-    accent: 'cyan',
+    accent: 'mint',
     glyph: 'IO',
   },
   {
@@ -22,7 +26,11 @@ const games = [
     description:
       'Identify system faults, debug buggy car systems and race your way to the finish.',
     skills: ['Debugging', 'Logic', 'Basic Programming'],
-    phases: ['Qualifying', 'Pit Stop', 'Final Race'],
+    phases: [
+      ['Qualifying', 'Find the first fault line.'],
+      ['Pit Stop', 'Repair system behavior.'],
+      ['Final Race', 'Run the fixed logic under pressure.'],
+    ],
     meta: ['Systems: Fuel, brake, engine, temperature, speed', 'Skills tested: Debugging, logic, programming basics'],
     accent: 'amber',
     glyph: 'CP',
@@ -34,7 +42,11 @@ const games = [
     description:
       'Search, filter and uncover Nemo hidden inside a large dataset.',
     skills: ['Excel', 'SQL', 'Python', 'Data Filtering'],
-    phases: ['Search', 'Filter', 'Rescue'],
+    phases: [
+      ['Search', 'Locate useful records.'],
+      ['Filter', 'Apply the right conditions.'],
+      ['Rescue', 'Extract the hidden result.'],
+    ],
     meta: ['Example filters: conditions, ranges, matches, missing values', 'Beginner-friendly data challenge'],
     accent: 'blue',
     glyph: 'FN',
@@ -46,7 +58,11 @@ const games = [
     description:
       'Take on programming challenges and deal damage to the dragon until its health reaches zero.',
     skills: ['Programming', 'Problem Solving', 'Strategy'],
-    phases: ['Final round', 'Damage the dragon', 'Reduce health to zero'],
+    phases: [
+      ['Final Round', 'Enter the programming arena.'],
+      ['Damage', 'Solve problems for XP impact.'],
+      ['Zero Health', 'Finish with strategy and speed.'],
+    ],
     meta: ['Easy: 2 XP, Medium: 5 XP, Hard: 7 XP, Extreme: 10 XP', 'Choose multiple easier problems or harder high-damage challenges'],
     accent: 'red',
     glyph: 'HT',
@@ -87,6 +103,8 @@ function Hero() {
   return (
     <section className="hero section" id="top">
       <div className="hero-bg" aria-hidden="true">
+        <span className="hero-label label-left">GRID 29.30 / MMCOE</span>
+        <span className="hero-label label-right">LOGIC DEBUG DATA CODE</span>
         <span className="scan scan-one" />
         <span className="scan scan-two" />
         <span className="node node-a" />
@@ -116,8 +134,13 @@ function Hero() {
 function GameCard({ game }) {
   return (
     <article className={`game-card accent-${game.accent} reveal`}>
+      <div className="game-motif" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
       <div className="card-topline">
-        <span>Game {game.number}</span>
+        <span className="game-number">{game.number}</span>
         <span className="glyph" aria-hidden="true">{game.glyph}</span>
       </div>
       <h3>{game.title}</h3>
@@ -126,7 +149,7 @@ function GameCard({ game }) {
       <div className="chips" aria-label={`${game.title} skills`}>
         {game.skills.map((skill) => <span key={skill}>{skill}</span>)}
       </div>
-      <a className="card-link" href={`#game-${game.number}`}>Explore Game</a>
+      <a className="card-link" href={`#game-${game.number}`}>Enter <span aria-hidden="true">→</span></a>
     </article>
   );
 }
@@ -156,19 +179,19 @@ function GameDetails() {
             <p className="detail-subtitle">{game.subtitle}</p>
             <p>{game.description}</p>
           </div>
-          <div className="detail-grid">
-            <div>
-              <h3>Phases</h3>
-              <ol>
-                {game.phases.map((phase) => <li key={phase}>{phase}</li>)}
-              </ol>
-            </div>
-            <div>
-              <h3>Technical Notes</h3>
-              <ul>
-                {game.meta.map((item) => <li key={item}>{item}</li>)}
-              </ul>
-            </div>
+          <div className="detail-flow">
+            <ol className="phase-timeline" aria-label={`${game.title} phases`}>
+              {game.phases.map(([phase, copy], index) => (
+                <li key={phase}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <strong>{phase}</strong>
+                  <p>{copy}</p>
+                </li>
+              ))}
+            </ol>
+            <ul className="detail-meta">
+              {game.meta.map((item) => <li key={item}>{item}</li>)}
+            </ul>
           </div>
         </article>
       ))}
@@ -214,14 +237,12 @@ function Timeline() {
         <article className="day-card reveal">
           <span>Day 01</span>
           <h3>29 October</h3>
-          <p>Inside Out</p>
-          <p>Cars</p>
+          <p>Inside Out <span aria-hidden="true">→</span> Cars</p>
         </article>
         <article className="day-card reveal">
           <span>Day 02</span>
           <h3>30 October</h3>
-          <p>Finding Nemo</p>
-          <p>Final Round: How to Train Your Dragon</p>
+          <p>Finding Nemo <span aria-hidden="true">→</span> Final Battle</p>
         </article>
       </div>
     </section>
@@ -254,9 +275,9 @@ function Qualification() {
 
 function Prizes() {
   const prizes = [
-    ['2ND', '₹5,000', 'podium-second'],
-    ['1ST', '₹7,000', 'podium-first'],
-    ['3RD', '₹3,000', 'podium-third'],
+    ['1ST', '₹7K'],
+    ['2ND', '₹5K'],
+    ['3RD', '₹3K'],
   ];
 
   return (
@@ -266,10 +287,10 @@ function Prizes() {
         <h2>Recognition for the strongest performers.</h2>
       </div>
       <div className="podium">
-        {prizes.map(([place, amount, className]) => (
-          <article className={`podium-card ${className} reveal`} key={place}>
-            <span>{place}</span>
+        {prizes.map(([place, amount]) => (
+          <article className="podium-card reveal" key={place}>
             <strong>{amount}</strong>
+            <span>{place}</span>
           </article>
         ))}
       </div>
